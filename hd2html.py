@@ -96,7 +96,7 @@ def generate_html(drafts, title="Hugo Drafts"):
 def generate_markdown(drafts, title="Hugo Drafts"):
     """Generate Markdown from draft data."""
     markdown = f"# {title}\n\n"
-    markdown += f"*{len(drafts)} draft{'s' if len(drafts) != 1 else ''}*\n\n"
+    markdown += f"*{len(drafts)} post{'s' if len(drafts) != 1 else ''}*\n\n"
     
     for draft in drafts:
         title_text = draft['title']
