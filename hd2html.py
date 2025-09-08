@@ -4,8 +4,17 @@
 import sys
 import csv
 import argparse
+import re
 from datetime import datetime
 from html import escape
+
+
+def slugify(text):
+    """Convert text to URL-friendly slug."""
+    # Convert to lowercase and replace spaces/special chars with hyphens
+    slug = re.sub(r'[^a-zA-Z0-9\s-]', '', text.lower())
+    slug = re.sub(r'[\s-]+', '-', slug)
+    return slug.strip('-')
 
 
 def parse_date(date_str):
@@ -93,9 +102,19 @@ def generate_html(drafts, title="Hugo Drafts"):
     return html
 
 
-def generate_markdown(drafts, title="Hugo Drafts"):
+def generate_markdown(drafts, title="Hugo Drafts", is_draft=True):
     """Generate Markdown from draft data."""
-    markdown = f"# {title}\n\n"
+    slug = slugify(title)
+    current_date = datetime.now().strftime('%Y-%m-%dT%H:%M:%S%z')
+    
+    markdown = f"""---
+slug: {slug}
+title: "{title}"
+date: {current_date}
+draft: {str(is_draft).lower()}
+---
+
+"""
     markdown += f"*{len(drafts)} post{'s' if len(drafts) != 1 else ''}*\n\n"
     
     for draft in drafts:
@@ -132,6 +151,11 @@ def main():
         default='Hugo Drafts',
         help='Title for the output (default: "Hugo Drafts")'
     )
+    parser.add_argument(
+        '--draft',
+        action='store_false',
+        help='Mark the generated markdown as draft (default: true)'
+    )
     
     args = parser.parse_args()
     
@@ -154,7 +178,7 @@ def main():
         drafts.sort(key=lambda x: x['publishDate'], reverse=True)
         
         if args.markdown:
-            output = generate_markdown(drafts, args.title)
+            output = generate_markdown(drafts, args.title, args.draft)
         else:
             output = generate_html(drafts, args.title)
         

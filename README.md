@@ -36,6 +36,7 @@ hugo list drafts | python hd2html.py -m -t "Development Drafts" > drafts.md
 
 - `--markdown`, `-m`: Output Markdown instead of HTML
 - `--title TITLE`, `-t TITLE`: Set a custom title (default: "Hugo Drafts")
+- `--draft`: Mark the generated markdown as draft (default: true)
 - `--help`, `-h`: Show help message
 
 ## Output Formats
@@ -49,7 +50,10 @@ A styled HTML page with:
 
 ### Markdown Output
 A Markdown document with:
-- H1 heading with the title
+- Hugo-compatible YAML frontmatter including:
+  - URL-friendly slug generated from title
+  - Current timestamp in ISO format
+  - Configurable draft status
 - Draft count in italics
 - Bulleted list with linked titles, dates in italics, and sections in code blocks
 - Sorted by publish date (newest first)
